@@ -6,18 +6,15 @@ import (
 	"net/http"
 	"os"
 	"time"
-	"github.com/kaplan-michael/cve-lookup/template"
 )
-
-type Foo struct {
-    Bar string
-}
 
 var httpClient = &http.Client{Timeout: 10 * time.Second}
 
 func getJSON(cve string, target interface{}) error {
-	url := &cve
-	r, err := httpClient.Get(url)
+	url := "https://services.nvd.nist.gov/rest/json/cve/1.0/"
+	cveurl := url + cve
+	fmt.Println(cveurl)
+	r, err := httpClient.Get(cveurl)
 	if err != nil {
 		return err
 	}
@@ -27,10 +24,10 @@ func getJSON(cve string, target interface{}) error {
 }
 
 func main() {
-	cveResponse = new cveResponseTemplate
+	cveResponse := new(cveResponseTemplate)
 	cve := os.Args[1]
 	getJSON(cve, cveResponse)
 
-	fmt.Print("test")
+	fmt.Println(cveResponse.Result.CVEItems)
 
 }
