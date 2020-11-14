@@ -1,1 +1,3 @@
-## lookup CVE form nvd in CLI
+# CVE lookup
+
+## lookup CVE from nvd in CLI
