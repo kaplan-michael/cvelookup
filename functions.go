@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -32,6 +33,13 @@ func getJSON(cve string, target interface{}) error {
 //}
 
 func printInfo() {
+
+	if len(cveResponse.Result.CVEItems) <= 0 {
+		err := fmt.Errorf("CVE was not found")
+		fmt.Println(err.Error())
+		os.Exit(1)
+
+	}
 	cve := cveResponse.Result.CVEItems[0].Cve.CVEDataMeta.ID
 	nvdCwe := cveResponse.Result.CVEItems[0].Cve.Problemtype.ProblemtypeData[0].Description[0].Value
 	cnaCwe := cveResponse.Result.CVEItems[0].Cve.Problemtype.ProblemtypeData[0].Description[1].Value
