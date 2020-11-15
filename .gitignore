@@ -1,3 +1,4 @@
 *.json
 cvelookup
 *.old
+sha256sum.txt
