@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"net/http"
 	"os"
@@ -10,6 +11,10 @@ import (
 
 var httpClient = &http.Client{Timeout: 10 * time.Second}
 var cveResponse = new(cveResponseTemplate)
+
+//Define flag vars
+var refFlagShort *bool
+var refFlag *bool
 
 func getJSON(cve string, target interface{}) error {
 	url := "https://services.nvd.nist.gov/rest/json/cve/1.0/"
@@ -23,14 +28,21 @@ func getJSON(cve string, target interface{}) error {
 	return json.NewDecoder(r.Body).Decode(target)
 }
 
-//TODO
-//func options() {
-//	cweFlag := flag.Bool("cwe", false, "Display CWE")
-//	cveFlag := flag.Bool("cve", false, "Display CVE")
-//
-//	flag.Parse()
-//
-//}
+//print references if ref flag is given
+func references() {
+	//	cweFlag := flag.Bool("cwe", false, "Display CWE")
+	//	cveFlag := flag.Bool("cve", false, "Display CVE")
+	refFlag = flag.Bool("ref", false, "Display References")
+	refFlagShort = flag.Bool("r", false, "Display References")
+	flag.Parse()
+	if *refFlag || *refFlagShort == true {
+
+		references := cveResponse.Result.CVEItems[0].Cve.References.ReferenceData
+		fmt.Printf("References: \n\n %+v\n\n", references)
+
+	}
+
+}
 
 func printInfo() {
 
@@ -40,6 +52,7 @@ func printInfo() {
 		os.Exit(1)
 
 	}
+
 	cve := cveResponse.Result.CVEItems[0].Cve.CVEDataMeta.ID
 	nvdCwe := cveResponse.Result.CVEItems[0].Cve.Problemtype.ProblemtypeData[0].Description[0].Value
 	cnaCwe := cveResponse.Result.CVEItems[0].Cve.Problemtype.ProblemtypeData[0].Description[1].Value
@@ -54,5 +67,6 @@ func printInfo() {
 	fmt.Printf("CVSS3: %+v/%+v\n", cvss3Score, cvss3String)
 	fmt.Printf("Public Date: %+v\n", publishedDate)
 	fmt.Printf("Description: \n\n %+v\n\n", description)
+	references()
 
 }
