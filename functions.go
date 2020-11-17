@@ -32,6 +32,15 @@ func getJSON(cve string, target interface{}) error {
 //
 //}
 
+func printCwes() {
+	Cwe := ("CWE not assigned")
+	for i := 0; i < len(cveResponse.Result.CVEItems[0].Cve.Problemtype.ProblemtypeData[0].Description); i++ {
+
+		Cwe = cveResponse.Result.CVEItems[0].Cve.Problemtype.ProblemtypeData[0].Description[i].Value
+		fmt.Printf("CWE: %+v\n", Cwe)
+	}
+}
+
 func printInfo() {
 
 	if len(cveResponse.Result.CVEItems) <= 0 {
@@ -41,16 +50,18 @@ func printInfo() {
 
 	}
 	cve := cveResponse.Result.CVEItems[0].Cve.CVEDataMeta.ID
-	nvdCwe := cveResponse.Result.CVEItems[0].Cve.Problemtype.ProblemtypeData[0].Description[0].Value
-	cnaCwe := cveResponse.Result.CVEItems[0].Cve.Problemtype.ProblemtypeData[0].Description[1].Value
+	//	Cwes := ("CWE not assigned")
+	//	if len(cveResponse.Result.CVEItems[0].Cve.Problemtype.ProblemtypeData[0].Description) >= 0 {
+	//		Cwes = cveResponse.Result.CVEItems[0].Cve.Problemtype.ProblemtypeData[0].Description[0:]
+	//	}
 	cvss3Score := cveResponse.Result.CVEItems[0].Impact.BaseMetricV3.CvssV3.BaseScore
 	cvss3String := cveResponse.Result.CVEItems[0].Impact.BaseMetricV3.CvssV3.VectorString
 	publishedDate := cveResponse.Result.CVEItems[0].PublishedDate
 	description := cveResponse.Result.CVEItems[0].Cve.Description.DescriptionData[0].Value
 
 	fmt.Printf("\nCVE: %+v\n", cve)
-	fmt.Printf("NVD CWE: %+v\n", nvdCwe)
-	fmt.Printf("CNA CWE: %+v\n", cnaCwe)
+	//fmt.Printf("CWEs: %+v\n", Cwes)
+	printCwes()
 	fmt.Printf("CVSS3: %+v/%+v\n", cvss3Score, cvss3String)
 	fmt.Printf("Public Date: %+v\n", publishedDate)
 	fmt.Printf("Description: \n\n %+v\n\n", description)
